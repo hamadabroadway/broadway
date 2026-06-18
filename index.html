@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Broadway American Casablanca</title>
+    <meta
+      name="description"
+      content="Menu en ligne Broadway American Casablanca avec commande directe via WhatsApp."
+    />
+    <link rel="icon" type="image/png" href="./assets/logo-broadway-256.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Broadway American Casablanca">
+        <img class="brand-logo" src="./assets/logo-broadway-transparent-turquoise.png" alt="Broadway American Food" />
+        <span>
+          <strong>Broadway American Food</strong>
+          <small>Casablanca</small>
+        </span>
+      </a>
+      <nav class="top-nav" aria-label="Navigation principale">
+        <a class="nav-text" href="#menu">Menu</a>
+        <a class="nav-icon" href="#panier" aria-label="Panier">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.5 6.5h15l-1.8 7.2a2 2 0 0 1-2 1.5H9a2 2 0 0 1-2-1.6L5.2 3.8H2.5" />
+            <path d="M9 20a1.2 1.2 0 1 0 0-2.4A1.2 1.2 0 0 0 9 20Z" />
+            <path d="M18 20a1.2 1.2 0 1 0 0-2.4A1.2 1.2 0 0 0 18 20Z" />
+          </svg>
+        </a>
+        <a class="nav-icon" href="https://www.instagram.com/broadway.officiel/" target="_blank" rel="noreferrer" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" />
+            <circle cx="12" cy="12" r="4" />
+            <circle cx="17.5" cy="6.5" r="1" />
+          </svg>
+        </a>
+        <a class="nav-icon" id="navWhatsapp" href="https://wa.me/212669072070" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4.4 19.6 5.6 16A8.2 8.2 0 1 1 8 18.2Z" />
+            <path d="M9.3 8.7c.2-.5.4-.6.7-.6h.5c.2 0 .4.1.5.4l.6 1.4c.1.3.1.5-.1.7l-.4.5c-.1.2-.1.4.1.6.5.9 1.3 1.7 2.3 2.2.2.1.4.1.6-.1l.6-.7c.2-.2.4-.2.7-.1l1.4.7c.3.1.4.3.4.6 0 .7-.3 1.3-.9 1.6-.7.4-2 .1-3.2-.5-1.8-.9-3.5-2.6-4.4-4.3-.6-1.1-.8-2-.4-2.4Z" />
+          </svg>
+        </a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="Broadway American Casablanca">
+        <img src="./assets/hero-broadway-spread.webp" alt="Menu Broadway American Food avec burger, sandwich, burrito, frites et mojitos" />
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="eyebrow">Taste of New York à Casablanca</p>
+          <h1>Broadway American</h1>
+          <p>
+            American food, burgers, burritos, sandwichs, loaded fries, desserts,
+            mojitos et sodas, inspirés de l’esprit Broadway.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#menu">Voir le menu</a>
+            <a class="button ghost" href="#panier">Commander</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="menu-section" id="menu">
+        <div class="section-heading">
+          <p class="eyebrow">Menu</p>
+          <h2>Choisis tes favoris</h2>
+        </div>
+
+        <div class="category-carousel" aria-label="Catégories du menu">
+          <button class="carousel-arrow" type="button" id="categoryPrev" aria-label="Catégories précédentes">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Catégories du menu">
+            <button class="tab active" type="button" data-category="regular-burger">Regular Burger</button>
+            <button class="tab" type="button" data-category="burger">Burger</button>
+            <button class="tab" type="button" data-category="burrito">Burrito</button>
+            <button class="tab" type="button" data-category="sandwich">Sandwich</button>
+            <button class="tab" type="button" data-category="loaded-fries">Loaded Fries</button>
+            <button class="tab" type="button" data-category="frites">Frites</button>
+            <button class="tab" type="button" data-category="mojito">Mojito</button>
+            <button class="tab" type="button" data-category="soda">Soda</button>
+            <button class="tab" type="button" data-category="dessert">Dessert</button>
+          </div>
+          <button class="carousel-arrow" type="button" id="categoryNext" aria-label="Catégories suivantes">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 6 6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+      </section>
+
+      <aside class="cart-panel" id="panier" aria-label="Panier">
+        <div class="cart-header">
+          <div>
+            <p class="eyebrow">Panier</p>
+            <h2>Ta commande</h2>
+          </div>
+          <span class="cart-count" id="cartCount">0</span>
+        </div>
+
+        <div class="cart-items" id="cartItems">
+          <p class="empty-cart">Ajoute un article pour préparer ta commande WhatsApp.</p>
+        </div>
+
+        <div class="cart-footer">
+          <div class="total-row">
+            <span>Total</span>
+            <strong id="cartTotal">0 DH</strong>
+          </div>
+          <button class="whatsapp-button" type="button" id="whatsappButton" disabled>
+            Commander sur WhatsApp
+          </button>
+          <p class="hint">La commande s’ouvre dans WhatsApp avec le détail du panier.</p>
+        </div>
+      </aside>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
