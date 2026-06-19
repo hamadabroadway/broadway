@@ -3,12 +3,34 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Broadway American Casablanca</title>
+    <title>Broadway American Casablanca — Menu & Commande en ligne</title>
     <meta
       name="description"
-      content="Menu en ligne Broadway American Casablanca avec commande directe via WhatsApp."
+      content="Broadway American Food Casablanca : burgers, burritos, sandwichs, loaded fries, mojitos et desserts. Commandez directement via WhatsApp."
     />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:title" content="Broadway American Food — Casablanca" />
+    <meta property="og:description" content="Burgers, burritos, sandwichs, loaded fries, mojitos et desserts inspirés de l'esprit Broadway. Commandez via WhatsApp." />
+    <meta property="og:image" content="https://hamadabroadway.github.io/broadway/assets/hero-broadway-spread.webp" />
+    <meta property="og:locale" content="fr_MA" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Broadway American Food — Casablanca" />
+    <meta name="twitter:description" content="American food, burgers, burritos, loaded fries, mojitos. Commandez via WhatsApp." />
+    <meta name="twitter:image" content="https://hamadabroadway.github.io/broadway/assets/hero-broadway-spread.webp" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#08aebf" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
     <link rel="icon" type="image/png" href="./assets/logo-broadway-256.png" />
+    <link rel="apple-touch-icon" href="./assets/logo-broadway-256.png" />
+    <link rel="preload" as="image" href="./assets/hero-broadway-spread.webp" type="image/webp" fetchpriority="high" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,11 +38,44 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Broadway American Food",
+      "image": "./assets/hero-broadway-spread.webp",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Casablanca",
+        "addressLocality": "Casablanca",
+        "addressCountry": "MA"
+      },
+      "servesCuisine": ["American", "Fast Food", "Burgers"],
+      "priceRange": "$$",
+      "telephone": "+212669072070",
+      "url": "https://hamadabroadway.github.io/broadway/",
+      "hasMenu": {
+        "@type": "Menu",
+        "hasMenuSection": [
+          {
+            "@type": "MenuSection",
+            "name": "Burgers",
+            "hasMenuItem": [
+              {"@type": "MenuItem", "name": "Easy Cheezy", "offers": {"@type": "Offer", "price": "37", "priceCurrency": "MAD"}},
+              {"@type": "MenuItem", "name": "Broadway Burger", "offers": {"@type": "Offer", "price": "57", "priceCurrency": "MAD"}}
+            ]
+          }
+        ]
+      }
+    }
+    </script>
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Broadway American Casablanca">
-        <img class="brand-logo" src="./assets/logo-broadway-transparent-turquoise.png" alt="Broadway American Food" />
+        <img class="brand-logo" src="./assets/logo-broadway-transparent-turquoise.png" alt="Broadway American Food" width="116" height="70" />
         <span>
           <strong>Broadway American Food</strong>
           <small>Casablanca</small>
@@ -34,6 +89,7 @@
             <path d="M9 20a1.2 1.2 0 1 0 0-2.4A1.2 1.2 0 0 0 9 20Z" />
             <path d="M18 20a1.2 1.2 0 1 0 0-2.4A1.2 1.2 0 0 0 18 20Z" />
           </svg>
+          <span class="cart-badge" id="cartBadge" hidden>0</span>
         </a>
         <a class="nav-icon" href="https://www.instagram.com/broadway.officiel/" target="_blank" rel="noreferrer" aria-label="Instagram">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -53,14 +109,17 @@
 
     <main id="top">
       <section class="hero" aria-label="Broadway American Casablanca">
-        <img src="./assets/hero-broadway-spread.webp" alt="Menu Broadway American Food avec burger, sandwich, burrito, frites et mojitos" />
+        <picture>
+          <source srcset="./assets/hero-broadway-spread.webp" type="image/webp" />
+          <img src="./assets/hero-broadway-spread.jpeg" alt="Menu Broadway American Food avec burger, sandwich, burrito, frites et mojitos" width="1200" height="800" loading="eager" decoding="async" fetchpriority="high" />
+        </picture>
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <p class="eyebrow">Taste of New York à Casablanca</p>
           <h1>Broadway American</h1>
           <p>
             American food, burgers, burritos, sandwichs, loaded fries, desserts,
-            mojitos et sodas, inspirés de l’esprit Broadway.
+            mojitos et sodas, inspirés de l'esprit Broadway.
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#menu">Voir le menu</a>
@@ -75,59 +134,94 @@
           <h2>Choisis tes favoris</h2>
         </div>
 
-        <div class="category-carousel" aria-label="Catégories du menu">
-          <button class="carousel-arrow" type="button" id="categoryPrev" aria-label="Catégories précédentes">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-          </button>
-          <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Catégories du menu">
-            <button class="tab active" type="button" data-category="regular-burger">Regular Burger</button>
-            <button class="tab" type="button" data-category="burger">Burger</button>
-            <button class="tab" type="button" data-category="burrito">Burrito</button>
-            <button class="tab" type="button" data-category="sandwich">Sandwich</button>
-            <button class="tab" type="button" data-category="loaded-fries">Loaded Fries</button>
-            <button class="tab" type="button" data-category="frites">Frites</button>
-            <button class="tab" type="button" data-category="mojito">Mojito</button>
-            <button class="tab" type="button" data-category="soda">Soda</button>
-            <button class="tab" type="button" data-category="dessert">Dessert</button>
+        <div class="menu-content">
+          <div class="category-carousel" aria-label="Catégories du menu">
+            <button class="carousel-arrow" type="button" id="categoryPrev" aria-label="Catégories précédentes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Catégories du menu">
+              <button class="tab active" role="tab" aria-selected="true" type="button" data-category="regular-burger">Regular Burger</button>
+              <button class="tab" role="tab" aria-selected="false" type="button" data-category="burger">Burger</button>
+              <button class="tab" role="tab" aria-selected="false" type="button" data-category="burrito">Burrito</button>
+              <button class="tab" role="tab" aria-selected="false" type="button" data-category="sandwich">Sandwich</button>
+              <button class="tab" role="tab" aria-selected="false" type="button" data-category="loaded-fries">Loaded Fries</button>
+              <button class="tab" role="tab" aria-selected="false" type="button" data-category="frites">Frites</button>
+              <button class="tab" role="tab" aria-selected="false" type="button" data-category="mojito">Mojito</button>
+              <button class="tab" role="tab" aria-selected="false" type="button" data-category="soda">Soda</button>
+              <button class="tab" role="tab" aria-selected="false" type="button" data-category="dessert">Dessert</button>
+            </div>
+            <button class="carousel-arrow" type="button" id="categoryNext" aria-label="Catégories suivantes">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </button>
           </div>
-          <button class="carousel-arrow" type="button" id="categoryNext" aria-label="Catégories suivantes">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m9 6 6 6-6 6" />
-            </svg>
-          </button>
-        </div>
 
-        <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+          <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+        </div>
       </section>
 
       <aside class="cart-panel" id="panier" aria-label="Panier">
-        <div class="cart-header">
-          <div>
-            <p class="eyebrow">Panier</p>
-            <h2>Ta commande</h2>
+        <button class="cart-toggle" type="button" id="cartToggle" aria-label="Réduire le panier">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="cart-body" id="cartBody">
+          <div class="cart-header">
+            <div>
+              <p class="eyebrow">Panier</p>
+              <h2>Ta commande</h2>
+            </div>
+            <span class="cart-count" id="cartCount">0</span>
           </div>
-          <span class="cart-count" id="cartCount">0</span>
-        </div>
 
-        <div class="cart-items" id="cartItems">
-          <p class="empty-cart">Ajoute un article pour préparer ta commande WhatsApp.</p>
-        </div>
-
-        <div class="cart-footer">
-          <div class="total-row">
-            <span>Total</span>
-            <strong id="cartTotal">0 DH</strong>
+          <div class="cart-items" id="cartItems">
+            <p class="empty-cart">Ajoute un article pour préparer ta commande WhatsApp.</p>
           </div>
-          <button class="whatsapp-button" type="button" id="whatsappButton" disabled>
-            Commander sur WhatsApp
-          </button>
-          <p class="hint">La commande s’ouvre dans WhatsApp avec le détail du panier.</p>
+
+          <div class="cart-footer">
+            <div class="total-row">
+              <span>Total</span>
+              <strong id="cartTotal">0 DH</strong>
+            </div>
+            <button class="whatsapp-button" type="button" id="whatsappButton" disabled>
+              Commander sur WhatsApp
+            </button>
+            <p class="hint">La commande s'ouvre dans WhatsApp avec le détail du panier.</p>
+          </div>
         </div>
       </aside>
     </main>
 
-    <script src="./script.js"></script>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img src="./assets/logo-broadway-transparent-turquoise.png" alt="Broadway American Food" width="80" height="48" />
+          <p><strong>Broadway American Food</strong><br>Casablanca, Maroc</p>
+        </div>
+        <div class="footer-links">
+          <h3>Contact</h3>
+          <ul>
+            <li><a href="https://wa.me/212669072070" target="_blank" rel="noreferrer">WhatsApp : +212 669 072 070</a></li>
+            <li><a href="https://www.instagram.com/broadway.officiel/" target="_blank" rel="noreferrer">Instagram : @broadway.officiel</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3>Horaires</h3>
+          <ul>
+            <li>Tous les jours</li>
+            <li>12h00 — 23h00</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Broadway American Food Casablanca. Tous droits réservés.</p>
+      </div>
+    </footer>
+
+    <div class="toast" id="toast" aria-live="assertive" hidden>Ajouté au panier !</div>
+
+    <script src="./script.js" defer></script>
   </body>
 </html>

@@ -1,0 +1,17 @@
+{
+  "name": "Broadway American Food Casablanca",
+  "short_name": "Broadway",
+  "description": "Menu et commande en ligne — Broadway American Food Casablanca",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f7fbfb",
+  "theme_color": "#08aebf",
+  "icons": [
+    {
+      "src": "./assets/logo-broadway-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
