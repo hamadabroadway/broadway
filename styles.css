@@ -355,9 +355,10 @@ h2 {
 .menu-card-image {
   width: 100%;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 6px;
-  background: var(--smoke);
+  background: #fff;
+  padding: 8px;
 }
 
 .menu-card-top {

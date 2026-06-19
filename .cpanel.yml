@@ -1,0 +1,26 @@
+---
+deployment:
+  tasks:
+    # Heberjahiz/cPanel Git deployment.
+    # This resets only the Broadway website files, then redeploys the full project.
+    # If your domain points to another folder, replace $HOME/public_html with that path.
+    - export DEPLOYPATH=$HOME/public_html
+    - /bin/mkdir -p "$DEPLOYPATH"
+    - /bin/rm -rf "$DEPLOYPATH/assets"
+    - /bin/rm -f "$DEPLOYPATH/index.html"
+    - /bin/rm -f "$DEPLOYPATH/404.html"
+    - /bin/rm -f "$DEPLOYPATH/styles.css"
+    - /bin/rm -f "$DEPLOYPATH/script.js"
+    - /bin/rm -f "$DEPLOYPATH/manifest.json"
+    - /bin/rm -f "$DEPLOYPATH/robots.txt"
+    - /bin/rm -f "$DEPLOYPATH/sitemap.xml"
+    - /bin/rm -f "$DEPLOYPATH/.nojekyll"
+    - /bin/cp -R assets "$DEPLOYPATH/"
+    - /bin/cp index.html "$DEPLOYPATH/"
+    - /bin/cp 404.html "$DEPLOYPATH/"
+    - /bin/cp styles.css "$DEPLOYPATH/"
+    - /bin/cp script.js "$DEPLOYPATH/"
+    - /bin/cp manifest.json "$DEPLOYPATH/"
+    - /bin/cp robots.txt "$DEPLOYPATH/"
+    - /bin/cp sitemap.xml "$DEPLOYPATH/"
+    - /bin/cp .nojekyll "$DEPLOYPATH/"
