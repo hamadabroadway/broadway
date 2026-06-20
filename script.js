@@ -54,6 +54,12 @@ const categoryImages = {
 const itemImages = {
   "Cheese Burger": "item-burger-cheese.webp",
   "Chicken Burger": "item-burger-chicken.webp",
+  "Easy Cheezy": "item-burger-easy-cheezy.webp",
+  "Chiky Smoky": "item-burger-chiky-smoky.webp",
+  "Chilly Smoky": "item-burger-chilly-smoky.webp",
+  "Eggy Smoky": "item-burger-eggy-smoky.webp",
+  "Mushy Cheezy": "item-burger-mushy-cheezy.webp",
+  "Broadway Burger": "item-burger-broadway.webp",
   "Burrito Classic": "item-burrito-classic.webp",
   "Burrito Chicken": "item-burrito-chicken.webp",
   "Burrito Crunchy": "item-burrito-crunchy.webp",
