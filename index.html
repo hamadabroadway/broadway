@@ -220,6 +220,53 @@
       </div>
     </footer>
 
+    <div class="sauce-modal" id="sauceModal" role="dialog" aria-modal="true" aria-labelledby="sauceTitle" hidden>
+      <div class="sauce-card">
+        <button class="sauce-close" type="button" id="sauceClose" aria-label="Fermer">×</button>
+        <p class="eyebrow" id="optionEyebrow">Options</p>
+        <h2 id="sauceTitle">Choisis tes options</h2>
+        <p class="sauce-item" id="sauceItemName"></p>
+        <div class="choice-group" id="sauceChoiceGroup">
+          <span>Sauce</span>
+          <div class="sauce-options" aria-label="Choix de sauce">
+            <button type="button" data-sauce="normal">Normal</button>
+            <button type="button" data-sauce="spicy">Spicy</button>
+            <button type="button" data-sauce="mix">Mix</button>
+          </div>
+        </div>
+        <div class="choice-group" id="friesChoiceGroup">
+          <span>Frites</span>
+          <div class="sauce-options fries-options" aria-label="Choix frites">
+            <button type="button" data-fries="with">Avec frite +10 DH</button>
+            <button type="button" data-fries="without">Sans frite</button>
+          </div>
+        </div>
+        <div class="choice-group" id="drinkChoiceGroup">
+          <span>Boisson</span>
+          <div class="sauce-options fries-options" aria-label="Choix boisson">
+            <button type="button" data-drink-option="with">Avec boisson +7 DH</button>
+            <button type="button" data-drink-option="without">Sans boisson</button>
+          </div>
+        </div>
+        <div class="choice-group soda-choice" id="sodaChoice" hidden>
+          <span>Choix de la boisson</span>
+          <div class="soda-options" id="sodaOptions" aria-label="Articles soda"></div>
+        </div>
+        <div class="choice-group" id="dessertChoiceGroup" hidden>
+          <span>Dessert</span>
+          <div class="sauce-options fries-options" aria-label="Choix dessert">
+            <button type="button" data-dessert-option="with">Avec dessert +17 DH</button>
+            <button type="button" data-dessert-option="without">Sans dessert</button>
+          </div>
+        </div>
+        <div class="choice-group soda-choice" id="dessertChoice" hidden>
+          <span>Choix du dessert</span>
+          <div class="soda-options" id="dessertOptions" aria-label="Articles dessert"></div>
+        </div>
+        <button class="sauce-submit" type="button" id="sauceSubmit" disabled>Ajouter au panier</button>
+      </div>
+    </div>
+
     <div class="toast" id="toast" aria-live="assertive" hidden>Ajouté au panier !</div>
 
     <script src="./script.js" defer></script>

@@ -73,6 +73,10 @@ const itemImages = {
   "Loaded Fries Chicken": "item-loaded-fries-chicken.webp",
   "Loaded Fries Beef": "item-loaded-fries-beef.webp",
   "Broadway Loaded Fries": "item-loaded-fries-broadway.webp",
+  "Mojito Normal": "item-mojito-normal.webp",
+  "Mojito Mangue": "item-mojito-mangue.webp",
+  "Mojito Rouge": "item-mojito-rouge.webp",
+  "Mojito Menthe": "item-mojito-menthe.webp",
   "Coca-Cola": "item-soda-coca-cola.webp",
   Poms: "item-soda-poms.webp",
   Sprite: "item-soda-sprite.webp",
@@ -94,7 +98,50 @@ const categoryNext = document.querySelector("#categoryNext");
 const cartToggle = document.querySelector("#cartToggle");
 const cartPanel = document.querySelector("#panier");
 const toast = document.querySelector("#toast");
+const sauceModal = document.querySelector("#sauceModal");
+const optionEyebrow = document.querySelector("#optionEyebrow");
+const sauceTitle = document.querySelector("#sauceTitle");
+const sauceItemName = document.querySelector("#sauceItemName");
+const sauceClose = document.querySelector("#sauceClose");
+const sauceSubmit = document.querySelector("#sauceSubmit");
+const sauceChoiceGroup = document.querySelector("#sauceChoiceGroup");
+const friesChoiceGroup = document.querySelector("#friesChoiceGroup");
+const drinkChoiceGroup = document.querySelector("#drinkChoiceGroup");
+const sodaChoice = document.querySelector("#sodaChoice");
+const sodaOptions = document.querySelector("#sodaOptions");
+const dessertChoiceGroup = document.querySelector("#dessertChoiceGroup");
+const dessertChoice = document.querySelector("#dessertChoice");
+const dessertOptions = document.querySelector("#dessertOptions");
 const tabs = document.querySelectorAll(".tab");
+const sauceLabels = {
+  normal: "Normal",
+  spicy: "Spicy",
+  mix: "Mix",
+};
+const friesLabels = {
+  with: "Avec frite",
+  without: "Sans frite",
+};
+const drinkLabels = {
+  with: "Avec boisson",
+  without: "Sans boisson",
+};
+const dessertLabels = {
+  with: "Avec dessert",
+  without: "Sans dessert",
+};
+const CUSTOM_OPTION_CATEGORIES = new Set(["burrito", "regular-burger", "burger", "sandwich", "loaded-fries"]);
+const BURRITO_FRIES_PRICE = 10;
+const BURRITO_DRINK_PRICE = 7;
+const DESSERT_OPTION_PRICE = 17;
+let pendingSauceItem = null;
+let pendingOptionCategory = null;
+let selectedSauce = null;
+let selectedFries = null;
+let selectedDrinkOption = null;
+let selectedSoda = null;
+let selectedDessertOption = null;
+let selectedDessert = null;
 
 function escapeHtml(str) {
   const div = document.createElement("div");
@@ -104,6 +151,45 @@ function escapeHtml(str) {
 
 function formatPrice(price) {
   return `${price} DH`;
+}
+
+function hasBurritoOptions(category) {
+  return category === "burrito";
+}
+
+function hasFriesOptions(category) {
+  return category === "burrito" || category === "burger";
+}
+
+function hasDessertOptions(category) {
+  return CUSTOM_OPTION_CATEGORIES.has(category);
+}
+
+function getCartKey(name, sauce, fries, drinkOption, soda, dessertOption, dessert) {
+  const hasOptions = sauce || fries || drinkOption || soda || dessertOption || dessert;
+  if (!hasOptions) return name;
+  return [
+    name,
+    sauce || "none",
+    fries || "none",
+    drinkOption || "without",
+    soda || "none",
+    dessertOption || "without",
+    dessert || "none",
+  ].join("::");
+}
+
+function getCartItemTitle(item) {
+  const options = [];
+  if (item.sauce) options.push(sauceLabels[item.sauce] || item.sauce);
+  if (item.fries) options.push(friesLabels[item.fries] || item.fries);
+  if (item.drinkOption) {
+    options.push(item.drinkOption === "with" && item.soda ? `${drinkLabels[item.drinkOption]}: ${item.soda}` : drinkLabels[item.drinkOption] || item.drinkOption);
+  }
+  if (item.dessertOption) {
+    options.push(item.dessertOption === "with" && item.dessert ? `${dessertLabels[item.dessertOption]}: ${item.dessert}` : dessertLabels[item.dessertOption] || item.dessertOption);
+  }
+  return options.length ? `${item.name} (${options.join(", ")})` : item.name;
 }
 
 function renderMenu() {
@@ -154,12 +240,16 @@ function renderCart() {
       (item) => `
         <div class="cart-item">
           <strong>${escapeHtml(item.name)}</strong>
+          ${item.sauce ? `<span class="cart-item-note">Sauce: ${escapeHtml(sauceLabels[item.sauce] || item.sauce)}</span>` : ""}
+          ${item.fries ? `<span class="cart-item-note">Frites: ${escapeHtml(friesLabels[item.fries] || item.fries)}${item.fries === "with" ? " +10 DH" : ""}</span>` : ""}
+          ${item.drinkOption ? `<span class="cart-item-note">Boisson: ${item.drinkOption === "with" ? `${escapeHtml(item.soda)} +7 DH` : escapeHtml(drinkLabels[item.drinkOption] || item.drinkOption)}</span>` : ""}
+          ${item.dessertOption ? `<span class="cart-item-note">Dessert: ${item.dessertOption === "with" ? `${escapeHtml(item.dessert)} +17 DH` : escapeHtml(dessertLabels[item.dessertOption] || item.dessertOption)}</span>` : ""}
           <div class="cart-controls">
             <span>${formatPrice(item.price * item.qty)}</span>
-            <span class="qty-controls" aria-label="Quantité ${escapeHtml(item.name)}">
-              <button type="button" aria-label="Retirer un ${escapeHtml(item.name)}" data-action="decrease" data-name="${escapeHtml(item.name)}">−</button>
+            <span class="qty-controls" aria-label="Quantité ${escapeHtml(getCartItemTitle(item))}">
+              <button type="button" aria-label="Retirer un ${escapeHtml(getCartItemTitle(item))}" data-action="decrease" data-key="${escapeHtml(item.key)}">−</button>
               <span>${item.qty}</span>
-              <button type="button" aria-label="Ajouter un ${escapeHtml(item.name)}" data-action="increase" data-name="${escapeHtml(item.name)}">+</button>
+              <button type="button" aria-label="Ajouter un ${escapeHtml(getCartItemTitle(item))}" data-action="increase" data-key="${escapeHtml(item.key)}">+</button>
             </span>
           </div>
         </div>
@@ -181,19 +271,132 @@ function showToast(message) {
   }, 1800);
 }
 
-function addToCart(name) {
+function renderSodaOptions() {
+  const sodas = menu.filter((item) => item.category === "soda");
+  sodaOptions.innerHTML = sodas
+    .map(
+      (item) => `
+        <button type="button" data-soda="${escapeHtml(item.name)}" aria-pressed="false">
+          ${escapeHtml(item.name)}
+          <small>${formatPrice(BURRITO_DRINK_PRICE)}</small>
+        </button>
+      `
+    )
+    .join("");
+}
+
+function renderDessertOptions() {
+  const desserts = menu.filter((item) => item.category === "dessert");
+  dessertOptions.innerHTML = desserts
+    .map(
+      (item) => `
+        <button type="button" data-dessert="${escapeHtml(item.name)}" aria-pressed="false">
+          ${escapeHtml(item.name)}
+          <small>${formatPrice(DESSERT_OPTION_PRICE)}</small>
+        </button>
+      `
+    )
+    .join("");
+}
+
+function openSauceModal(name) {
   const item = menu.find((menuItem) => menuItem.name === name);
   if (!item) return;
-  const existing = cart.get(name);
+  const isBurrito = hasBurritoOptions(item.category);
+  const hasFriesOption = hasFriesOptions(item.category);
+  const hasDessertOption = hasDessertOptions(item.category);
+
+  pendingSauceItem = name;
+  pendingOptionCategory = item.category;
+  selectedSauce = null;
+  selectedFries = null;
+  selectedDrinkOption = null;
+  selectedSoda = null;
+  selectedDessertOption = null;
+  selectedDessert = null;
+  optionEyebrow.textContent = isBurrito ? "Options burrito" : "Menu en option";
+  sauceTitle.textContent = isBurrito ? "Choisis tes options" : "Complète ton menu";
+  sauceItemName.textContent = name;
+  sauceSubmit.disabled = true;
+  sauceChoiceGroup.hidden = !isBurrito;
+  friesChoiceGroup.hidden = !hasFriesOption;
+  drinkChoiceGroup.hidden = false;
+  dessertChoiceGroup.hidden = !hasDessertOption;
+  sodaChoice.hidden = true;
+  dessertChoice.hidden = true;
+  renderSodaOptions();
+  renderDessertOptions();
+  sauceModal.querySelectorAll("[data-sauce], [data-fries], [data-drink-option], [data-soda], [data-dessert-option], [data-dessert]").forEach((button) => {
+    button.classList.remove("selected");
+    button.setAttribute("aria-pressed", "false");
+  });
+  sauceModal.hidden = false;
+  const firstOption = isBurrito ? sauceModal.querySelector("[data-sauce]") : sauceModal.querySelector("[data-drink-option]");
+  if (firstOption) firstOption.focus();
+}
+
+function closeSauceModal() {
+  pendingSauceItem = null;
+  pendingOptionCategory = null;
+  selectedSauce = null;
+  selectedFries = null;
+  selectedDrinkOption = null;
+  selectedSoda = null;
+  selectedDessertOption = null;
+  selectedDessert = null;
+  sauceModal.hidden = true;
+}
+
+function updateSauceSubmitState() {
+  const isBurrito = hasBurritoOptions(pendingOptionCategory);
+  const hasFriesOption = hasFriesOptions(pendingOptionCategory);
+  const hasDessertOption = hasDessertOptions(pendingOptionCategory);
+  const hasBurritoChoices = !isBurrito || selectedSauce;
+  const hasFriesChoice = !hasFriesOption || selectedFries;
+  const hasDrinkChoice = selectedDrinkOption === "without" || (selectedDrinkOption === "with" && selectedSoda);
+  const hasDessertChoice = !hasDessertOption || selectedDessertOption === "without" || (selectedDessertOption === "with" && selectedDessert);
+  sauceSubmit.disabled = !(hasBurritoChoices && hasFriesChoice && hasDrinkChoice && hasDessertChoice);
+}
+
+function selectModalOption(button, selector) {
+  button.closest(".sauce-options, .soda-options").querySelectorAll(selector).forEach((option) => {
+    option.classList.toggle("selected", option === button);
+    option.setAttribute("aria-pressed", option === button ? "true" : "false");
+  });
+}
+
+function addToCart(name, sauce = null, fries = null, drinkOption = null, soda = null, dessertOption = null, dessert = null) {
+  const item = menu.find((menuItem) => menuItem.name === name);
+  if (!item) return;
+
+  const needsOptions = CUSTOM_OPTION_CATEGORIES.has(item.category);
+  const needsBurritoOptions = hasBurritoOptions(item.category);
+  const needsFriesOptions = hasFriesOptions(item.category);
+  const needsDessertOptions = hasDessertOptions(item.category);
+  const missingBurritoOptions = needsBurritoOptions && !sauce;
+  const missingFriesOptions = needsFriesOptions && !fries;
+  const missingDrinkOptions = !drinkOption || (drinkOption === "with" && !soda);
+  const missingDessertOptions = needsDessertOptions && (!dessertOption || (dessertOption === "with" && !dessert));
+
+  if (needsOptions && (missingBurritoOptions || missingFriesOptions || missingDrinkOptions || missingDessertOptions)) {
+    openSauceModal(name);
+    return;
+  }
+
+  const friesPrice = needsFriesOptions && fries === "with" ? BURRITO_FRIES_PRICE : 0;
+  const drinkPrice = needsOptions && drinkOption === "with" ? BURRITO_DRINK_PRICE : 0;
+  const dessertPrice = needsDessertOptions && dessertOption === "with" ? DESSERT_OPTION_PRICE : 0;
+  const key = getCartKey(name, sauce, fries, drinkOption, soda, dessertOption, dessert);
+  const existing = cart.get(key);
 
   if (existing) {
     existing.qty += 1;
   } else {
-    cart.set(name, { ...item, qty: 1 });
+    cart.set(key, { ...item, key, sauce, fries, drinkOption, soda, dessertOption, dessert, price: item.price + friesPrice + drinkPrice + dessertPrice, qty: 1 });
   }
 
   renderCart();
-  showToast(`${name} ajouté au panier`);
+  showToast(`${getCartItemTitle({ name, sauce, fries, drinkOption, soda, dessertOption, dessert })} ajouté au panier`);
 
   const btn = menuGrid.querySelector(`[data-name="${CSS.escape(name)}"]`);
   if (btn) {
@@ -206,13 +409,13 @@ function addToCart(name) {
   }
 }
 
-function updateQuantity(name, delta) {
-  const item = cart.get(name);
+function updateQuantity(key, delta) {
+  const item = cart.get(key);
   if (!item) return;
 
   item.qty += delta;
   if (item.qty <= 0) {
-    cart.delete(name);
+    cart.delete(key);
   }
 
   renderCart();
@@ -222,7 +425,7 @@ function buildWhatsAppMessage() {
   const items = [...cart.values()];
   const total = items.reduce((sum, item) => sum + item.qty * item.price, 0);
   const lines = items.map(
-    (item) => `- ${item.qty} x ${item.name}: ${formatPrice(item.qty * item.price)}`
+    (item) => `- ${item.qty} x ${getCartItemTitle(item)}: ${formatPrice(item.qty * item.price)}`
   );
 
   return [
@@ -240,7 +443,7 @@ function buildWhatsAppMessage() {
 
 function saveCart() {
   try {
-    const data = [...cart.entries()].map(([k, v]) => [k, { name: v.name, category: v.category, price: v.price, qty: v.qty }]);
+    const data = [...cart.entries()].map(([k, v]) => [k, { name: v.name, category: v.category, price: v.price, sauce: v.sauce, fries: v.fries, drinkOption: v.drinkOption, soda: v.soda, dessertOption: v.dessertOption, dessert: v.dessert, qty: v.qty }]);
     localStorage.setItem("broadway_cart", JSON.stringify(data));
   } catch (_) {}
 }
@@ -251,9 +454,11 @@ function loadCart() {
     if (!raw) return;
     const data = JSON.parse(raw);
     for (const [key, val] of data) {
-      const menuItem = menu.find((m) => m.name === key);
+      const menuItem = menu.find((m) => m.name === val.name || m.name === key);
       if (menuItem) {
-        cart.set(key, { ...menuItem, qty: val.qty });
+        const hasOptions = val.sauce || val.fries || val.drinkOption || val.soda || val.dessertOption || val.dessert;
+        const cartKey = hasOptions ? getCartKey(menuItem.name, val.sauce, val.fries, val.drinkOption, val.soda, val.dessertOption, val.dessert) : menuItem.name;
+        cart.set(cartKey, { ...menuItem, key: cartKey, price: val.price || menuItem.price, sauce: val.sauce || null, fries: val.fries || null, drinkOption: val.drinkOption || null, soda: val.soda || null, dessertOption: val.dessertOption || null, dessert: val.dessert || null, qty: val.qty });
       }
     }
   } catch (_) {}
@@ -302,7 +507,102 @@ cartItems.addEventListener("click", (event) => {
   const button = event.target.closest("[data-action]");
   if (!button) return;
   const delta = button.dataset.action === "increase" ? 1 : -1;
-  updateQuantity(button.dataset.name, delta);
+  updateQuantity(button.dataset.key, delta);
+});
+
+sauceModal.addEventListener("click", (event) => {
+  if (event.target === sauceModal) {
+    closeSauceModal();
+    return;
+  }
+
+  const sauceButton = event.target.closest("[data-sauce]");
+  if (sauceButton) {
+    selectedSauce = sauceButton.dataset.sauce;
+    selectModalOption(sauceButton, "[data-sauce]");
+    updateSauceSubmitState();
+    return;
+  }
+
+  const friesButton = event.target.closest("[data-fries]");
+  if (friesButton) {
+    selectedFries = friesButton.dataset.fries;
+    selectModalOption(friesButton, "[data-fries]");
+    updateSauceSubmitState();
+    return;
+  }
+
+  const drinkButton = event.target.closest("[data-drink-option]");
+  if (drinkButton) {
+    selectedDrinkOption = drinkButton.dataset.drinkOption;
+    selectedSoda = null;
+    selectModalOption(drinkButton, "[data-drink-option]");
+    sodaChoice.hidden = selectedDrinkOption !== "with";
+    sodaOptions.querySelectorAll("[data-soda]").forEach((option) => {
+      option.classList.remove("selected");
+      option.setAttribute("aria-pressed", "false");
+    });
+    updateSauceSubmitState();
+    return;
+  }
+
+  const sodaButton = event.target.closest("[data-soda]");
+  if (sodaButton) {
+    selectedSoda = sodaButton.dataset.soda;
+    selectModalOption(sodaButton, "[data-soda]");
+    updateSauceSubmitState();
+    return;
+  }
+
+  const dessertButton = event.target.closest("[data-dessert-option]");
+  if (dessertButton) {
+    selectedDessertOption = dessertButton.dataset.dessertOption;
+    selectedDessert = null;
+    selectModalOption(dessertButton, "[data-dessert-option]");
+    dessertChoice.hidden = selectedDessertOption !== "with";
+    dessertOptions.querySelectorAll("[data-dessert]").forEach((option) => {
+      option.classList.remove("selected");
+      option.setAttribute("aria-pressed", "false");
+    });
+    updateSauceSubmitState();
+    return;
+  }
+
+  const dessertItemButton = event.target.closest("[data-dessert]");
+  if (dessertItemButton) {
+    selectedDessert = dessertItemButton.dataset.dessert;
+    selectModalOption(dessertItemButton, "[data-dessert]");
+    updateSauceSubmitState();
+  }
+});
+
+sauceClose.addEventListener("click", closeSauceModal);
+
+sauceSubmit.addEventListener("click", () => {
+  const isBurrito = hasBurritoOptions(pendingOptionCategory);
+  const hasFriesOption = hasFriesOptions(pendingOptionCategory);
+  const hasDessertOption = hasDessertOptions(pendingOptionCategory);
+  if (!pendingSauceItem || !selectedDrinkOption) return;
+  if (isBurrito && !selectedSauce) return;
+  if (hasFriesOption && !selectedFries) return;
+  if (selectedDrinkOption === "with" && !selectedSoda) return;
+  if (hasDessertOption && !selectedDessertOption) return;
+  if (selectedDessertOption === "with" && !selectedDessert) return;
+  const name = pendingSauceItem;
+  const sauce = selectedSauce;
+  const fries = selectedFries;
+  const drinkOption = selectedDrinkOption;
+  const soda = selectedSoda;
+  const dessertOption = selectedDessertOption;
+  const dessert = selectedDessert;
+  closeSauceModal();
+  addToCart(name, sauce, fries, drinkOption, soda, dessertOption, dessert);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !sauceModal.hidden) {
+    closeSauceModal();
+  }
 });
 
 whatsappButton.addEventListener("click", () => {
