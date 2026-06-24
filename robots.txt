@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hamadabroadway.github.io/broadway/sitemap.xml
+Sitemap: https://www.broadwayfood.ma/sitemap.xml

@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# Force the canonical production domain once SSL is active in cPanel.
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} !^www\.broadwayfood\.ma$ [NC]
+RewriteRule ^ https://www.broadwayfood.ma%{REQUEST_URI} [R=301,L]
+
+DirectoryIndex index.html

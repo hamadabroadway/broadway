@@ -14,6 +14,7 @@ deployment:
     - /bin/rm -f "$DEPLOYPATH/manifest.json"
     - /bin/rm -f "$DEPLOYPATH/robots.txt"
     - /bin/rm -f "$DEPLOYPATH/sitemap.xml"
+    - /bin/rm -f "$DEPLOYPATH/.htaccess"
     - /bin/rm -f "$DEPLOYPATH/.nojekyll"
     - /bin/cp -R assets "$DEPLOYPATH/"
     - /bin/cp index.html "$DEPLOYPATH/"
@@ -23,4 +24,5 @@ deployment:
     - /bin/cp manifest.json "$DEPLOYPATH/"
     - /bin/cp robots.txt "$DEPLOYPATH/"
     - /bin/cp sitemap.xml "$DEPLOYPATH/"
+    - /bin/cp .htaccess "$DEPLOYPATH/"
     - /bin/cp .nojekyll "$DEPLOYPATH/"
