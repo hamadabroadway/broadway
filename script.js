@@ -365,6 +365,19 @@ function selectModalOption(button, selector) {
   });
 }
 
+function trackAddToCart(item) {
+  if (typeof window.fbq !== "function") return;
+
+  window.fbq("track", "AddToCart", {
+    content_name: getCartItemTitle(item),
+    content_category: item.category,
+    content_ids: [item.key],
+    content_type: "product",
+    value: item.price,
+    currency: "MAD",
+  });
+}
+
 function addToCart(name, sauce = null, fries = null, drinkOption = null, soda = null, dessertOption = null, dessert = null) {
   const item = menu.find((menuItem) => menuItem.name === name);
   if (!item) return;
@@ -386,15 +399,17 @@ function addToCart(name, sauce = null, fries = null, drinkOption = null, soda = 
   const friesPrice = needsFriesOptions && fries === "with" ? BURRITO_FRIES_PRICE : 0;
   const drinkPrice = needsOptions && drinkOption === "with" ? BURRITO_DRINK_PRICE : 0;
   const dessertPrice = needsDessertOptions && dessertOption === "with" ? DESSERT_OPTION_PRICE : 0;
+  const finalPrice = item.price + friesPrice + drinkPrice + dessertPrice;
   const key = getCartKey(name, sauce, fries, drinkOption, soda, dessertOption, dessert);
   const existing = cart.get(key);
 
   if (existing) {
     existing.qty += 1;
   } else {
-    cart.set(key, { ...item, key, sauce, fries, drinkOption, soda, dessertOption, dessert, price: item.price + friesPrice + drinkPrice + dessertPrice, qty: 1 });
+    cart.set(key, { ...item, key, sauce, fries, drinkOption, soda, dessertOption, dessert, price: finalPrice, qty: 1 });
   }
 
+  trackAddToCart({ ...item, key, sauce, fries, drinkOption, soda, dessertOption, dessert, price: finalPrice });
   renderCart();
   showToast(`${getCartItemTitle({ name, sauce, fries, drinkOption, soda, dessertOption, dessert })} ajouté au panier`);
 
