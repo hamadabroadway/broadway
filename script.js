@@ -378,6 +378,24 @@ function trackAddToCart(item) {
   });
 }
 
+function trackInitiateCheckout() {
+  if (typeof window.fbq !== "function") return;
+
+  const items = [...cart.values()];
+  if (items.length === 0) return;
+
+  const total = items.reduce((sum, item) => sum + item.qty * item.price, 0);
+  const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
+
+  window.fbq("track", "InitiateCheckout", {
+    value: total,
+    currency: "MAD",
+    content_ids: items.map((item) => item.key || item.name),
+    content_type: "product",
+    num_items: totalQty,
+  });
+}
+
 function addToCart(name, sauce = null, fries = null, drinkOption = null, soda = null, dessertOption = null, dessert = null) {
   const item = menu.find((menuItem) => menuItem.name === name);
   if (!item) return;
@@ -621,6 +639,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 whatsappButton.addEventListener("click", () => {
+  trackInitiateCheckout();
   const message = encodeURIComponent(buildWhatsAppMessage());
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank", "noopener,noreferrer");
 });
